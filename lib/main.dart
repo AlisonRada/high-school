@@ -40,7 +40,6 @@ Widget _buildUi() {
         builder: (context, authProvider, child) {
       print("AuthProvider logged ${authProvider.loggedIn}");
       if (authProvider.loggedIn) {
-         //return LoginView();
         return CourseListView();
       } else {
         return LoginView();

@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../models/course.dart';
 
 class CourseListView extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return BaseView<HomeModel>(
@@ -135,7 +136,7 @@ class CourseListView extends StatelessWidget {
     return FloatingActionButton(
         backgroundColor: Color.fromRGBO(140, 0, 75, 1),
         onPressed: () => _onAdd(context, model),
-        tooltip: 'Add task',
+        tooltip: 'Add course',
         child: new Icon(Icons.add));
   }
 

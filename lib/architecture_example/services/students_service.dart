@@ -29,6 +29,7 @@ class StudentService {
     try {
       Person student = await _api.addStudentService(_user, courseId, _token);
       _students.add(student);
+      return student;
     } catch (err) {
       print('service addStudents ${err.toString()}');
       return Future.error(err.toString());

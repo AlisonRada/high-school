@@ -146,13 +146,14 @@ class StudentListView extends StatelessWidget {
     return FloatingActionButton(
         backgroundColor: Color.fromRGBO(140, 0, 75, 1),
         onPressed: () => _onAdd(context, model),
-        tooltip: 'Add task',
+        tooltip: 'Add student',
         child: new Icon(Icons.add));
   }
 
   void _onAdd(BuildContext context, StudentModel model) async {
     try {
-      await model.addStudent(course.id);
+      Person student = await model.addStudent(course.id);
+      courseDetail.students.add(student);
     } catch (err) {
       print('upsss ${err.toString()}');
       await _buildDialog(context, 'Alert', 'Need to login');

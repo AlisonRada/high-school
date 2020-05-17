@@ -26,8 +26,27 @@ class Api {
         'password': password,
       }),
     );
-    // print('${response.body}');
-    // print('${response.statusCode}');
+    if (response.statusCode == 200) {
+      return User.fromJson(json.decode(response.body));
+    } else {
+      Map<String, dynamic> body = json.decode(response.body);
+      return Future.error(body['error']);
+    }
+  }
+
+  Future<User> addUserProfile({String email, String password, String username, String name}) async {
+    final http.Response response = await http.post(
+      'https://movil-api.herokuapp.com/signup',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'password': password,
+        'username': username,
+        'name': name,
+      }),
+    );
     if (response.statusCode == 200) {
       return User.fromJson(json.decode(response.body));
     } else {
@@ -101,9 +120,6 @@ class Api {
       HttpHeaders.authorizationHeader: "Bearer " + token,
     },
   );
-  print('token $token');
-  print('${response.statusCode}');
-  print('$response');
   if (response.statusCode == 200) {
     // print('${response.body}');
     return Course.fromJson(json.decode(response.body));
@@ -174,27 +190,21 @@ class Api {
   }
 
   Future<Person> addStudentService(String username, int courseId, String token) async {
-    Map data = {
-      'courseId': courseId,
-    };
     final http.Response response = await http.post(
-      baseUrl + '/' + username + '/students',
+      'https://movil-api.herokuapp.com/$username/students',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         HttpHeaders.authorizationHeader: "Bearer " + token,
-      }, body: data);
-    print('token $token');
-    print('${response.statusCode}');
-    print('$response');
+      },
+      body: jsonEncode(<String, int>{
+        'courseId':courseId,
+      }),
+    );
     if (response.statusCode == 200) {
-      // print('${response.body}');
       return Person.fromJson(json.decode(response.body));
     } else {
-      //throw Exception('Failed to register user');
       Map<String, dynamic> body = json.decode(response.body);
-      String error = body['error'];
-      print('error  $error');
-      return Future.error(error);
+      return Future.error(body['error']);
     }
   }
 

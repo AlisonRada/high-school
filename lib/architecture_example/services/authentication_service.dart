@@ -10,6 +10,17 @@ class AuthenticationService {
   User user;
  // StreamController<User> userController = StreamController<User>();
 
+  Future<bool> signUp(String email, String password,String username,String name) async {
+    User fetchedUser = await _api.addUserProfile(email: email, password: password,username: username,name: name);
+    var hasUser = fetchedUser != null;
+    if(hasUser) {
+      print('Got user token ${fetchedUser.token}');
+      //userController.add(fetchedUser);
+      user = fetchedUser;
+    }
+    return hasUser;
+  }
+
   Future<bool> login(String email, String password) async {
     User fetchedUser = await _api.getUserProfile(email: email, password: password);
 

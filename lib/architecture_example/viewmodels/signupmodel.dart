@@ -4,14 +4,14 @@ import 'package:f_202010_provider_get_it/architecture_example/services/authentic
 
 import '../locator.dart';
 
-class LoginModel extends BaseModel {
+class SignUpModel extends BaseModel {
   final AuthenticationService _authenticationService =
-      locator<AuthenticationService>();
+  locator<AuthenticationService>();
   User get user => _authenticationService.user;
- 
-  Future<bool> login(String email, String password) async {
+
+  Future<bool> singUp(String email,String password,String username,String name) async {
     setState(ViewState.Busy);
-    var success = await _authenticationService.login(email, password);
+    var success = await _authenticationService.signUp(email,password,username,name);
     notifyListeners();
     setState(ViewState.Idle);
     return success;

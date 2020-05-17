@@ -29,9 +29,9 @@ class StudentModel extends BaseModel {
   Future addStudent(int courseId) async {
     setState(ViewState.Busy);
     try {
-      await _studentService.addStudent(courseId);
+      Person student = await _studentService.addStudent(courseId);
       setState(ViewState.Idle);
-      return Future.value(true);
+      return Future.value(student);
     } catch (err) {
       print('studentmodel addStudent ${err.toString()}');
       setState(ViewState.Idle);

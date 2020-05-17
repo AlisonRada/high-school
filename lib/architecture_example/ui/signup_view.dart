@@ -1,44 +1,41 @@
 import 'package:f_202010_provider_get_it/architecture_example/base/base_model.dart';
 import 'package:f_202010_provider_get_it/architecture_example/base/base_view.dart';
 import 'package:f_202010_provider_get_it/architecture_example/viewmodels/auth_provider.dart';
-import 'package:f_202010_provider_get_it/architecture_example/viewmodels/loginmodel.dart';
+import 'package:f_202010_provider_get_it/architecture_example/viewmodels/signupmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../viewmodels/loginmodel.dart';
-import 'signup_view.dart';
-
-
-class LoginView extends StatelessWidget {
+class SignUpView extends StatelessWidget {
 
   Color colorApp = Color.fromRGBO(140, 0, 75, 1);
 
-  String initemail, initpass, email, password;
-  bool rememberMe;
-
-  TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
-
-  RegExp emailRegExp =
-  new RegExp(r'^\w+[\w-\.]*\@\w+((-\w+)|(\w*))\.[a-z]{2,3}$');
-
-  RegExp contRegExp = new RegExp(r'^([1-z0-1@A-Z.\s]{1,255})$');
-  RegExp contNumExp = new RegExp('[a-zA-Z]');
-
   final _formKey = GlobalKey<FormState>();
-
+  String email;
+  String password;
   @override
   Widget build(BuildContext context) {
-    return BaseView<LoginModel>(
+
+    final _formKey = GlobalKey<FormState>();
+    String email, password, usuario, nombre;
+    TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
+
+    RegExp emailRegExp =
+    new RegExp(r'^\w+[\w-\.]*\@\w+((-\w+)|(\w*))\.[a-z]{2,3}$');
+
+    RegExp contRegExp = new RegExp(r'^([1-z0-1@A-Z.\s]{1,255})$');
+    RegExp contNumExp = new RegExp('[a-zA-Z]');
+
+    return BaseView<SignUpModel>(
         builder: (context, model, child) => Scaffold(
-            body: 
-           // Provider.of<User>(context, listen: false).logged == true ?  CourseListView() :
+            body:
+            // Provider.of<User>(context, listen: false).logged == true ?  CourseListView() :
             model.state == ViewState.Busy
                 ? Center(child: CircularProgressIndicator())
                 : Center(
               child: Center(
                 child: Scaffold(
                   appBar: AppBar(
-                    title: Text("Login"),
+                    title: Text("SingUp"),
                     backgroundColor: colorApp,
                   ),
                   body: ListView(
@@ -52,6 +49,42 @@ class LoginView extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'Please enter some text';
+                                    }
+                                    usuario = value;
+                                    return null;
+                                  },
+                                  style: style,
+                                  decoration: InputDecoration(
+                                      counterText: '',
+                                      labelText: 'Username',
+                                      contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                      border:
+                                      OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)))),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'Please enter some text';
+                                    }
+                                    nombre = value;
+                                    return null;
+                                  },
+                                  style: style,
+                                  decoration: InputDecoration(
+                                      counterText: '',
+                                      labelText: 'Nombre',
+                                      contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                      border:
+                                      OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)))),
+                            ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextFormField(
@@ -77,23 +110,19 @@ class LoginView extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextFormField(
-                                  validator: (text) {
-                                    if (text.length == 0) {
-                                      return "Este campo contraseña es requerido";
-                                    } else if (text.length < 8) {
-                                      return "Su contraseña debe ser al menos de 5 caracteres";
-                                    } else if (!contRegExp.hasMatch(text)) {
-                                      return "El formato para contraseña no es correcto";
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'Please enter some text';
                                     }
-                                    password = text;
+                                    password = value;
                                     return null;
                                   },
                                   style: style,
                                   obscureText: true,
                                   decoration: InputDecoration(
-                                      labelText: 'Password',
+                                      counterText: '',
+                                      labelText: 'Contraseña',
                                       contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                      hintText: "Password",
                                       border:
                                       OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)))
                               ),
@@ -107,7 +136,8 @@ class LoginView extends StatelessWidget {
                                   padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                                   onPressed: () async {
                                     if (_formKey.currentState.validate()) {
-                                      var loginSuccess=await model.login(email, password)??false;
+                                      var loginSuccess = await model
+                                          .singUp(email, password,usuario,nombre);
                                       if (loginSuccess) {
                                         print(
                                             'LoginView loginSuccess setting up setLoggedIn ');
@@ -126,60 +156,23 @@ class LoginView extends StatelessWidget {
                                   ),
                                   elevation: 3.0,
                                   child: Text('LogIn',
-                                  style: style.copyWith(
-                                      color: Colors.white, fontWeight: FontWeight.bold)
+                                      style: style.copyWith(
+                                          color: Colors.white, fontWeight: FontWeight.bold)
                                   ),
                                 ),
                               ),
                             ),
-                            Center(
-                                child: Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: Text(
-                                        'Remember me',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.blueGrey,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 150.0,
-                                    ),
-                                    FlatButton(
-                                        child: GestureDetector(
-                                          onTap: (){
-                                            Navigator.push(context,
-                                                MaterialPageRoute(builder: (context) => SignUpView()));
-                                          },
-                                          child: Text(
-                                            'SignUp',
-                                            textAlign: TextAlign.end,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.blueGrey,
-                                            ),
-                                          ),
-                                        )
-                                    )
-                                  ],
-                                )),
                           ],
                         ),
                       ),
                     ],
-                  ),
+                  )
                 ),
               ),
-            )
-        )
-    );
+            )));
   }
 
-    Future<void> _buildDialog(BuildContext context, _title, _message) {
+  Future<void> _buildDialog(BuildContext context, _title, _message) {
     return showDialog(
       builder: (context) {
         return AlertDialog(
