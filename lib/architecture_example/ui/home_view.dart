@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/course.dart';
+import 'login_view.dart';
 
 class CourseListView extends StatelessWidget {
 
@@ -26,6 +27,8 @@ class CourseListView extends StatelessWidget {
                   onPressed: () {
                     Provider.of<AuthProvider>(context, listen: false)
                         .setLogOut();
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                        LoginView()), (Route<dynamic> route) => false);
                   },
                 ),
               ],
@@ -160,7 +163,8 @@ class CourseListView extends StatelessWidget {
             FlatButton(
                 child: Text('OK'),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                      LoginView()), (Route<dynamic> route) => false);
                 })
           ],
         );

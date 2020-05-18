@@ -17,6 +17,11 @@ class StudentListView extends StatelessWidget {
   final Course course;
   final CourseDetail courseDetail;
   StudentListView({this.course, this.courseDetail});
+  MaterialApp s= new MaterialApp(
+  routes: <String, WidgetBuilder> {
+  '/login': (BuildContext context) => new LoginView()
+  }
+  );
   @override
   Widget build(BuildContext context) {
     return BaseView<StudentModel>(
@@ -66,8 +71,8 @@ class StudentListView extends StatelessWidget {
                     leading: Icon(Icons.exit_to_app),
                     title: Text('Cerrar sesión'),
                     onTap: (){
-                      Provider.of<AuthProvider>(context, listen: false)
-                          .setLogOut();
+                      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                          LoginView()), (Route<dynamic> route) => false);
                     },
                 )
 
@@ -171,7 +176,8 @@ class StudentListView extends StatelessWidget {
             FlatButton(
                 child: Text('OK'),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                      LoginView()), (Route<dynamic> route) => false);
                 })
           ],
         );

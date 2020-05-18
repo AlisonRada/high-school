@@ -11,12 +11,14 @@ import '../models/course.dart';
 import '../models/course_detail.dart';
 import '../models/person.dart';
 import 'home_view.dart';
+import 'login_view.dart';
 import 'students_list.dart';
 
 class TeacherListView extends StatelessWidget {
   final Course course;
   final CourseDetail courseDetail;
   TeacherListView({this.course, this.courseDetail});
+
   @override
   Widget build(BuildContext context) {
     return BaseView<TeacherModel>(
@@ -66,8 +68,8 @@ class TeacherListView extends StatelessWidget {
                   leading: Icon(Icons.exit_to_app),
                   title: Text('Cerrar sesión'),
                   onTap: (){
-                    Provider.of<AuthProvider>(context, listen: false)
-                        .setLogOut();
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                        LoginView()), (Route<dynamic> route) => false);
                   },
                 )
               ],
@@ -96,6 +98,7 @@ class TeacherListView extends StatelessWidget {
       print("getTeachers got error: " + error);
       await _buildDialog(context, 'Alert', 'Need to login');
       Provider.of<AuthProvider>(context, listen: false).setLogOut();
+
     });
   }
 
@@ -137,7 +140,6 @@ class TeacherListView extends StatelessWidget {
       ),
     );
   }
-
   Future<void> _buildDialog(BuildContext context, _title, _message) {
     return showDialog(
       builder: (context) {
@@ -148,7 +150,10 @@ class TeacherListView extends StatelessWidget {
             FlatButton(
                 child: Text('OK'),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                      LoginView()), (Route<dynamic> route) => false);
+                  /*Navigator.of(context).pushNamedAndRemoveUntil(
+                      '/login', (Route<dynamic> route) => false);*/
                 })
           ],
         );
@@ -156,4 +161,5 @@ class TeacherListView extends StatelessWidget {
       context: context,
     );
   }
+
 }

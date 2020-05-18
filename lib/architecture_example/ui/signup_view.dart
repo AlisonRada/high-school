@@ -12,6 +12,7 @@ class SignUpView extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   String email;
   String password;
+
   @override
   Widget build(BuildContext context) {
 
@@ -155,7 +156,7 @@ class SignUpView extends StatelessWidget {
                                       side: BorderSide(color: Colors.red)
                                   ),
                                   elevation: 3.0,
-                                  child: Text('LogIn',
+                                  child: Text('Create user',
                                       style: style.copyWith(
                                           color: Colors.white, fontWeight: FontWeight.bold)
                                   ),

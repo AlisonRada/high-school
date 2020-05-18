@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../viewmodels/loginmodel.dart';
+import 'home_view.dart';
 import 'signup_view.dart';
 
 
@@ -13,8 +14,8 @@ class LoginView extends StatelessWidget {
 
   Color colorApp = Color.fromRGBO(140, 0, 75, 1);
 
-  String initemail, initpass, email, password;
-  bool rememberMe;
+  String email, password;
+  var _rememberMe=false;
 
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
@@ -26,11 +27,13 @@ class LoginView extends StatelessWidget {
 
   final _formKey = GlobalKey<FormState>();
 
+
   @override
   Widget build(BuildContext context) {
-    return BaseView<LoginModel>(
+    return
+      BaseView<LoginModel>(
         builder: (context, model, child) => Scaffold(
-            body: 
+            body:
            // Provider.of<User>(context, listen: false).logged == true ?  CourseListView() :
             model.state == ViewState.Busy
                 ? Center(child: CircularProgressIndicator())
@@ -55,6 +58,7 @@ class LoginView extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextFormField(
+                                  initialValue: getEmailR(context),
                                   validator: (text) {
                                     if (text.isEmpty) {
                                       return "Este campo correo es requerido";
@@ -77,6 +81,7 @@ class LoginView extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextFormField(
+                                  initialValue: getPasswordR(context),
                                   validator: (text) {
                                     if (text.length == 0) {
                                       return "Este campo contraseña es requerido";
@@ -109,13 +114,21 @@ class LoginView extends StatelessWidget {
                                     if (_formKey.currentState.validate()) {
                                       var loginSuccess=await model.login(email, password)??false;
                                       if (loginSuccess) {
+                                        var prov = Provider.of<AuthProvider>(context, listen: false);
+                                        if(_rememberMe){
+                                          prov.setRemember(true, email,password);
+                                        }else{
+                                          prov.setRemember(false, "","");
+                                        }
                                         print(
                                             'LoginView loginSuccess setting up setLoggedIn ');
-                                        Provider.of<AuthProvider>(context,
-                                            listen: false)
-                                            .setLoggedIn(
+                                        prov.setLoggedIn(
                                             model.user.username,
                                             model.user.token);
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) => CourseListView()),
+                                        );
                                       }
                                     }
                                   },
@@ -135,19 +148,20 @@ class LoginView extends StatelessWidget {
                             Center(
                                 child: Row(
                                   children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: Text(
+                                    Switch(
+                                      value: _rememberMe,
+                                      onChanged:_onRememberMeChanged,
+                                      activeTrackColor: Colors.black38,
+                                      activeColor: Color.fromRGBO(140, 0, 75, 1),
+                                    ),
+                                    Text(
                                         'Remember me',
                                         style: TextStyle(
                                           fontSize: 15,
                                           color: Colors.blueGrey,
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 150.0,
-                                    ),
+                                    Spacer(),
                                     FlatButton(
                                         child: GestureDetector(
                                           onTap: (){
@@ -178,8 +192,8 @@ class LoginView extends StatelessWidget {
         )
     );
   }
-
-    Future<void> _buildDialog(BuildContext context, _title, _message) {
+    @override
+    Future<void> _buildDialog(BuildContext context, _title, _message) async {
     return showDialog(
       builder: (context) {
         return AlertDialog(
@@ -197,4 +211,24 @@ class LoginView extends StatelessWidget {
       context: context,
     );
   }
+  String getEmailR(BuildContext context){
+    var prov = Provider.of<AuthProvider>(context, listen: false);
+    prov.isRemember();
+    if(prov.remember==true){
+      _rememberMe=true;
+      return prov.email;
+    }else{
+      return "";
+    }
+  }
+  String getPasswordR(BuildContext context){
+    var prov = Provider.of<AuthProvider>(context, listen: false);
+    prov.isRemember();
+    if(prov.remember==true){
+      return prov.password;
+    }else{
+      return "";
+    }
+  }
+  void _onRememberMeChanged(bool newValue) => _rememberMe = newValue;
 }
