@@ -72,7 +72,8 @@ class StudentListView extends StatelessWidget {
                     title: Text('Cerrar sesión'),
                     onTap: (){
                       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-                          LoginView()), (Route<dynamic> route) => false);
+                      LoginView()), (Route<dynamic> route) => false);
+                      //Navigator.popUntil(context, ModalRoute.withName('/screen2'));
                     },
                 )
 

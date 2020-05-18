@@ -5,6 +5,8 @@ import 'package:f_202010_provider_get_it/architecture_example/viewmodels/signupm
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'home_view.dart';
+
 class SignUpView extends StatelessWidget {
 
   Color colorApp = Color.fromRGBO(140, 0, 75, 1);
@@ -147,6 +149,10 @@ class SignUpView extends StatelessWidget {
                                             .setLoggedIn(
                                             model.user.username,
                                             model.user.token);
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) => CourseListView()),
+                                        );
                                       }
                                     }
                                   },

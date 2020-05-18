@@ -81,7 +81,7 @@ class LoginView extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextFormField(
-                                  initialValue: getPasswordR(context),
+                                  initialValue:getPasswordR(context),
                                   validator: (text) {
                                     if (text.length == 0) {
                                       return "Este campo contraseña es requerido";
@@ -115,7 +115,7 @@ class LoginView extends StatelessWidget {
                                       var loginSuccess=await model.login(email, password)??false;
                                       if (loginSuccess) {
                                         var prov = Provider.of<AuthProvider>(context, listen: false);
-                                        if(_rememberMe){
+                                       if(_rememberMe){
                                           prov.setRemember(true, email,password);
                                         }else{
                                           prov.setRemember(false, "","");
