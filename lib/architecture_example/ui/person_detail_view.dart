@@ -5,6 +5,8 @@ import 'package:f_202010_provider_get_it/architecture_example/viewmodels/persond
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'login_view.dart';
+
 class StudentDetailView extends StatelessWidget {
   final bool isStudent;
   final int studentId;
@@ -14,10 +16,21 @@ class StudentDetailView extends StatelessWidget {
     return BaseView<PersonDetailModel>(
         onModelReady: (model) => isStudent ? model.getStudent(
             Provider.of<AuthProvider>(context).username,
-            Provider.of<AuthProvider>(context).token,studentId) :
+            Provider.of<AuthProvider>(context).token,studentId).catchError(
+                (error) async {
+                  print("Token invalided: " + error);
+                  await _buildDialog(context, 'Alert', 'Need to login');
+                  Provider.of<AuthProvider>(context, listen: false).setLogOut();
+                }) :
             model.getTeacher(
             Provider.of<AuthProvider>(context).username,
-            Provider.of<AuthProvider>(context).token,studentId),
+            Provider.of<AuthProvider>(context).token,studentId).catchError(
+                    (error) async {
+                      print("getTeachers got error: " + error);
+                      await _buildDialog(context, 'Alert', 'Need to login');
+                      Provider.of<AuthProvider>(context, listen: false)
+                          .setLogOut();
+                    }),
         builder: (context, model, child) => Scaffold(
             appBar: AppBar(
               title: Text("Información detallada"),
@@ -45,23 +58,20 @@ class StudentDetailView extends StatelessWidget {
                           ,)
                         ),
                         Padding(padding: const EdgeInsets.all(6.0),
-                        child: Row(
-                          children: <Widget>[
-                            SizedBox(width: 50,),
-                            Text('Curso ID: ${model.studentDetail.course_id}',
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.9),
-                                fontSize: 15.0,),
-                            ),
-                            SizedBox(width: 30,),
-                            Text('Usuario: ${model.studentDetail.username}',
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.9),
-                                fontSize: 15.0,),
-                            ),
-                          ],
+                          child:Text('Curso ID: ${model.studentDetail.course_id}',
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.9),
+                              fontSize: 15.0,),
+                          ),
                         ),
-                        ),Padding(padding: const EdgeInsets.all(6.0),
+                        Padding(padding: const EdgeInsets.all(6.0),
+                          child:Text('Usuario: ${model.studentDetail.username}',
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.9),
+                              fontSize: 15.0,),
+                          ),
+                        ),
+                        Padding(padding: const EdgeInsets.all(6.0),
                             child:Text('Cumpleaños: ${model.studentDetail.birthday.substring(0,10)}',
                               style: TextStyle(
                                 color: Colors.black.withOpacity(0.9),
@@ -101,5 +111,24 @@ class StudentDetailView extends StatelessWidget {
                 )
               ],
             )));
+  }
+  Future<void> _buildDialog(BuildContext context, _title, _message) {
+    return showDialog(
+      builder: (context) {
+        return AlertDialog(
+          title: Text(_title),
+          content: Text(_message),
+          actions: <Widget>[
+            FlatButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                      LoginView()), (Route<dynamic> route) => false);
+                })
+          ],
+        );
+      },
+      context: context,
+    );
   }
 }

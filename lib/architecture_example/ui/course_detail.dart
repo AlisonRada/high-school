@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../models/course.dart';
 import '../models/course_detail.dart';
+import 'login_view.dart';
 import 'teachers_list.dart';
 
 class CourseDetailView extends StatelessWidget {
@@ -18,7 +19,12 @@ class CourseDetailView extends StatelessWidget {
     return BaseView<CourseDetailModel>(
         onModelReady: (model) => model.getCourse(
             Provider.of<AuthProvider>(context).username,
-            Provider.of<AuthProvider>(context).token,course.id),
+            Provider.of<AuthProvider>(context).token,course.id).catchError(
+                (error) async {
+                  print("getTeachers got error: " + error);
+                  await _buildDialog(context, 'Alert', 'Need to login');
+                  Provider.of<AuthProvider>(context, listen: false).setLogOut();
+                }),
         builder: (context, model, child) => Scaffold(
             appBar: AppBar(
               title: Text("Course detail"),
@@ -71,6 +77,25 @@ class CourseDetailView extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
           builder: (context) => TeacherListView(course: course, courseDetail: courseDetail)),
+    );
+  }
+  Future<void> _buildDialog(BuildContext context, _title, _message) {
+    return showDialog(
+      builder: (context) {
+        return AlertDialog(
+          title: Text(_title),
+          content: Text(_message),
+          actions: <Widget>[
+            FlatButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                      LoginView()), (Route<dynamic> route) => false);
+                })
+          ],
+        );
+      },
+      context: context,
     );
   }
 }
